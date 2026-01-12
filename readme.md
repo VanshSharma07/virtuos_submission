@@ -15,6 +15,9 @@
 ## Program Output
 
 <img width="460" height="315" alt="Program Output" src="https://github.com/user-attachments/assets/6af48036-135b-4e5e-bc6b-b136195fad4e" />
+<img width="521" height="308" alt="image" src="https://github.com/user-attachments/assets/fd9b4e59-4a8f-42e6-b1a4-ae65d830a29b" />
+
 
 ---
+
 
