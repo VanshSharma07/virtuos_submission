@@ -18,32 +18,53 @@ db.connect(err => {
         console.log("DB connection failed");
         process.exit();
     }
-    console.log("Connected to DB");
+    // console.log("Connected to DB");
 });
+
+async function askValidNumber(label, min, max ) {
+            let value ;
+            while(true){
+                value = parseFloat(await ask(`${label} (${min} - ${max}): `));
+                if(!isNaN(value) && value >= min && value <= max){
+                    return value;
+                }
+                console.log(`invalid ${label}. Please enter again`);
+            }
+            
+        }
 
 const ask = q => new Promise(r => rl.question(q, r));
 
+
 (async () => {
     try {
-        const studentName = await ask("Student Name: ");
-        const collegeName = await ask("College Name: ");
-        const r1 = parseFloat(await ask("Round1 marks (0-10): "));
-        const r2 = parseFloat(await ask("Round2 marks (0-10): "));
-        const r3 = parseFloat(await ask("Round3 marks (0-10): "));
-        const tech = parseFloat(await ask("Technical Round marks (0-20): "));
 
-        if (studentName.length > 30 || collegeName.length > 50) {
-            console.log("Name length exceeded");
-            return;
+        let studentName;
+        while(true){
+            studentName = await ask("Student Name : ");
+            if(studentName.length >= 1 && studentName.length <= 30) break;
+            console.log("Student name must be 1 to 30 char");
         }
 
-        if ([r1, r2, r3].some(v => isNaN(v) || v < 0 || v > 10) || isNaN(tech) || tech < 0 || tech > 20) {
-            console.log("Invalid marks");
-            return;
+        let collegeName ;
+          while(true){
+            collegeName = await ask("College Name : ");
+            if(collegeName.length >= 1 && collegeName.length <= 30) break;
+            console.log("college name must be 1 to 30 char");
         }
 
-        const total = r1 + r2 + r3 + tech;
-        const status = total >= 35 ? "Selected" : "Rejected";
+        const r1 = await askValidNumber("round 1", 0,10);
+        const r2 = await askValidNumber("round 2", 0,10);
+        const r3 = await askValidNumber("round 3", 0,10);
+        const tech = await askValidNumber("tech round", 0,20);
+
+        const roundStatus = r1>=6.5 && r2 >= 6.5 && r3 >= 6.5 && tech >= 13 ;
+
+        const total = r1+r2+r3+tech;
+
+        const status = roundStatus && total >= 35 ? "Selected" : "Rejected"
+    
+
 
         await db.promise().execute(
             `INSERT INTO candidate_scores
